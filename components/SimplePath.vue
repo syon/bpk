@@ -1,8 +1,6 @@
 <template>
-  <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
-    <g>
-      <path class="connector" :d="connectorPath"></path>
-    </g>
+  <g>
+    <path class="connector" :d="connectorData" />
     <g>
       <rect
         :x="startPoint.x - 5"
@@ -25,6 +23,8 @@
           :cy="startHandle.y"
           r="5"
           class="zz-handle"
+          @pointerdown="dragStartSH"
+          @pointerup="dragStopSH"
         />
       </g>
       <g>
@@ -32,7 +32,7 @@
         <circle :cx="endHandle.x" :cy="endHandle.y" r="5" class="zz-handle" />
       </g>
     </g>
-  </svg>
+  </g>
 </template>
 
 <script>
@@ -61,9 +61,22 @@ export default {
       const { endPoint: ep, endHandle: eh } = this.obj
       return `M${ep.x},${ep.y} L${eh.x},${eh.y}`
     },
-    connectorPath() {
-      const { startPoint, startHandle, endHandle, endPoint } = this.obj
-      return `M${startPoint.x},${startPoint.y} C${startHandle.x},${startHandle.y} ${endHandle.x},${endHandle.y} ${endPoint.x},${endPoint.y}`
+    connectorData() {
+      const {
+        startPoint: sp,
+        startHandle: sh,
+        endHandle: eh,
+        endPoint: ep,
+      } = this.obj
+      return `M${sp.x},${sp.y} C${sh.x},${sh.y} ${eh.x},${eh.y} ${ep.x},${ep.y}`
+    },
+  },
+  methods: {
+    dragStartSH(event) {
+      this.$emit('dragStart', event)
+    },
+    dragStopSH(event) {
+      this.$emit('dragStop', event)
     },
   },
 }
@@ -78,14 +91,15 @@ export default {
 
 .zz-point {
   fill: none;
-  stroke: gray;
+  stroke: dodgerblue;
   stroke-width: 1;
 }
 
 .zz-handle {
-  fill: none;
+  fill: rgba(30, 144, 255, 0.2);
   stroke: dodgerblue;
   stroke-width: 1;
+  cursor: pointer;
 }
 
 .zz-handleline {
