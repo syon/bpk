@@ -1,21 +1,38 @@
 <template>
-  <g>
+  <g @mousemove="onMousemove">
     <path class="connector" :d="connectorData" />
+    <foreignObject x="0" y="0" width="300" height="20">
+      <div class="text-xs">{{ connectorData }}</div>
+    </foreignObject>
     <g>
-      <rect
-        :x="startPoint.x - 5"
-        :y="startPoint.y - 5"
-        width="10"
-        height="10"
-        class="zz-point"
-      />
-      <rect
-        :x="endPoint.x - 5"
-        :y="endPoint.y - 5"
-        width="10"
-        height="10"
-        class="zz-point"
-      />
+      <g>
+        <rect
+          :x="startPoint.x - 5"
+          :y="startPoint.y - 5"
+          width="10"
+          height="10"
+          class="zz-point"
+          @pointerdown="dragStart('startPoint')"
+          @pointerup="dragStop"
+        />
+        <text :x="startPoint.x + 15" :y="startPoint.y + 15" font-size="12">
+          x:{{ startPoint.x }} y:{{ startPoint.y }}
+        </text>
+      </g>
+      <g>
+        <rect
+          :x="endPoint.x - 5"
+          :y="endPoint.y - 5"
+          width="10"
+          height="10"
+          class="zz-point"
+          @pointerdown="dragStart('endPoint')"
+          @pointerup="dragStop"
+        />
+        <text :x="endPoint.x + 15" :y="endPoint.y + 15" font-size="12">
+          x:{{ endPoint.x }} y:{{ endPoint.y }}
+        </text>
+      </g>
       <g>
         <path :d="startHandlePath" class="zz-handleline" />
         <circle
@@ -23,13 +40,26 @@
           :cy="startHandle.y"
           r="5"
           class="zz-handle"
-          @pointerdown="dragStartSH"
-          @pointerup="dragStopSH"
+          @pointerdown="dragStart('startHandle')"
+          @pointerup="dragStop"
         />
+        <text :x="startHandle.x + 15" :y="startHandle.y + 15" font-size="12">
+          x:{{ startHandle.x }} y:{{ startHandle.y }}
+        </text>
       </g>
       <g>
         <path :d="endHandlePath" class="zz-handleline" />
-        <circle :cx="endHandle.x" :cy="endHandle.y" r="5" class="zz-handle" />
+        <circle
+          :cx="endHandle.x"
+          :cy="endHandle.y"
+          r="5"
+          class="zz-handle"
+          @pointerdown="dragStart('endHandle')"
+          @pointerup="dragStop"
+        />
+        <text :x="endHandle.x + 15" :y="endHandle.y + 15" font-size="12">
+          x:{{ endHandle.x }} y:{{ endHandle.y }}
+        </text>
       </g>
     </g>
   </g>
@@ -37,28 +67,21 @@
 
 <script>
 export default {
-  props: {
-    obj: { type: Object, required: true },
-  },
+  data: () => ({
+    isDragging: false,
+    dragProp: '',
+    startPoint: { x: 100, y: 100 },
+    startHandle: { x: 250, y: 50 },
+    endHandle: { x: 200, y: 300 },
+    endPoint: { x: 400, y: 250 },
+  }),
   computed: {
-    startPoint() {
-      return this.obj.startPoint
-    },
-    endPoint() {
-      return this.obj.endPoint
-    },
-    startHandle() {
-      return this.obj.startHandle
-    },
-    endHandle() {
-      return this.obj.endHandle
-    },
     startHandlePath() {
-      const { startPoint: sp, startHandle: sh } = this.obj
+      const { startPoint: sp, startHandle: sh } = this
       return `M${sp.x},${sp.y} L${sh.x},${sh.y}`
     },
     endHandlePath() {
-      const { endPoint: ep, endHandle: eh } = this.obj
+      const { endPoint: ep, endHandle: eh } = this
       return `M${ep.x},${ep.y} L${eh.x},${eh.y}`
     },
     connectorData() {
@@ -67,16 +90,23 @@ export default {
         startHandle: sh,
         endHandle: eh,
         endPoint: ep,
-      } = this.obj
+      } = this
       return `M${sp.x},${sp.y} C${sh.x},${sh.y} ${eh.x},${eh.y} ${ep.x},${ep.y}`
     },
   },
   methods: {
-    dragStartSH(event) {
-      this.$emit('dragStart', event)
+    dragStart(prop) {
+      this.isDragging = true
+      this.dragProp = prop
     },
-    dragStopSH(event) {
-      this.$emit('dragStop', event)
+    dragStop() {
+      this.isDragging = false
+    },
+    onMousemove(event) {
+      if (!this.isDragging) return false
+      const { offsetX, offsetY } = event
+      this[this.dragProp].x = offsetX
+      this[this.dragProp].y = offsetY
     },
   },
 }
@@ -90,9 +120,10 @@ export default {
 }
 
 .zz-point {
-  fill: none;
+  fill: rgba(30, 144, 255, 0.2);
   stroke: dodgerblue;
   stroke-width: 1;
+  cursor: pointer;
 }
 
 .zz-handle {
