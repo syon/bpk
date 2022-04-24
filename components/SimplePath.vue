@@ -1,7 +1,9 @@
 <template>
   <g @mousemove="onMousemove" @pointerup="dragStop">
     <path class="connector" :d="connectorData" />
-    <text x="10" y="20" font-size="12">{{ connectorData }}</text>
+    <text x="10" y="20" font-size="12" font-family="monospace">
+      &lt;path d="{{ connectorData }}"/&gt;
+    </text>
     <g>
       <g>
         <rect
@@ -64,10 +66,10 @@ export default {
   data: () => ({
     isDragging: false,
     dragProp: '',
-    startPoint: { x: 100, y: 100 },
-    startHandle: { x: 250, y: 50 },
-    endHandle: { x: 200, y: 300 },
-    endPoint: { x: 400, y: 250 },
+    startPoint: { x: 200, y: 200 },
+    startHandle: { x: 350, y: 150 },
+    endHandle: { x: 350, y: 400 },
+    endPoint: { x: 600, y: 350 },
   }),
   computed: {
     sp() {
