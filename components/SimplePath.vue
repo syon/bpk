@@ -1,64 +1,58 @@
 <template>
-  <g @mousemove="onMousemove">
+  <g @mousemove="onMousemove" @pointerup="dragStop">
     <path class="connector" :d="connectorData" />
-    <foreignObject x="0" y="0" width="300" height="20">
-      <div class="text-xs">{{ connectorData }}</div>
-    </foreignObject>
+    <text x="10" y="20" font-size="12">{{ connectorData }}</text>
     <g>
       <g>
         <rect
-          :x="startPoint.x - 5"
-          :y="startPoint.y - 5"
+          :x="sp.x - 5"
+          :y="sp.y - 5"
           width="10"
           height="10"
           class="zz-point"
           @pointerdown="dragStart('startPoint')"
-          @pointerup="dragStop"
         />
-        <text :x="startPoint.x + 15" :y="startPoint.y + 15" font-size="12">
-          x:{{ startPoint.x }} y:{{ startPoint.y }}
+        <text :x="sp.x + 15" :y="sp.y + 15" font-size="12">
+          x:{{ sp.x }} y:{{ sp.y }}
         </text>
       </g>
       <g>
         <rect
-          :x="endPoint.x - 5"
-          :y="endPoint.y - 5"
+          :x="ep.x - 5"
+          :y="ep.y - 5"
           width="10"
           height="10"
           class="zz-point"
           @pointerdown="dragStart('endPoint')"
-          @pointerup="dragStop"
         />
-        <text :x="endPoint.x + 15" :y="endPoint.y + 15" font-size="12">
-          x:{{ endPoint.x }} y:{{ endPoint.y }}
+        <text :x="ep.x + 15" :y="ep.y + 15" font-size="12">
+          x:{{ ep.x }} y:{{ ep.y }}
         </text>
       </g>
       <g>
         <path :d="startHandlePath" class="zz-handleline" />
         <circle
-          :cx="startHandle.x"
-          :cy="startHandle.y"
+          :cx="sh.x"
+          :cy="sh.y"
           r="5"
           class="zz-handle"
           @pointerdown="dragStart('startHandle')"
-          @pointerup="dragStop"
         />
-        <text :x="startHandle.x + 15" :y="startHandle.y + 15" font-size="12">
-          x:{{ startHandle.x }} y:{{ startHandle.y }}
+        <text :x="sh.x + 15" :y="sh.y + 15" font-size="12">
+          x:{{ sh.x }} y:{{ sh.y }}
         </text>
       </g>
       <g>
         <path :d="endHandlePath" class="zz-handleline" />
         <circle
-          :cx="endHandle.x"
-          :cy="endHandle.y"
+          :cx="eh.x"
+          :cy="eh.y"
           r="5"
           class="zz-handle"
           @pointerdown="dragStart('endHandle')"
-          @pointerup="dragStop"
         />
-        <text :x="endHandle.x + 15" :y="endHandle.y + 15" font-size="12">
-          x:{{ endHandle.x }} y:{{ endHandle.y }}
+        <text :x="eh.x + 15" :y="eh.y + 15" font-size="12">
+          x:{{ eh.x }} y:{{ eh.y }}
         </text>
       </g>
     </g>
@@ -76,21 +70,28 @@ export default {
     endPoint: { x: 400, y: 250 },
   }),
   computed: {
+    sp() {
+      return this.startPoint
+    },
+    sh() {
+      return this.startHandle
+    },
+    eh() {
+      return this.endHandle
+    },
+    ep() {
+      return this.endPoint
+    },
     startHandlePath() {
-      const { startPoint: sp, startHandle: sh } = this
+      const { sp, sh } = this
       return `M${sp.x},${sp.y} L${sh.x},${sh.y}`
     },
     endHandlePath() {
-      const { endPoint: ep, endHandle: eh } = this
+      const { ep, eh } = this
       return `M${ep.x},${ep.y} L${eh.x},${eh.y}`
     },
     connectorData() {
-      const {
-        startPoint: sp,
-        startHandle: sh,
-        endHandle: eh,
-        endPoint: ep,
-      } = this
+      const { sp, sh, eh, ep } = this
       return `M${sp.x},${sp.y} C${sh.x},${sh.y} ${eh.x},${eh.y} ${ep.x},${ep.y}`
     },
   },
@@ -136,5 +137,9 @@ export default {
 .zz-handleline {
   stroke: dodgerblue;
   stroke-width: 1;
+}
+
+text {
+  user-select: none;
 }
 </style>
