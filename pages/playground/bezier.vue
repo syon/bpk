@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'PlaygroundPage',
+  name: 'BezierPage',
 }
 </script>
 
