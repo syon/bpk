@@ -52,7 +52,7 @@ import { mapGetters } from 'vuex'
 import svgPanZoom from 'svg-pan-zoom'
 
 export default {
-  name: 'Step6Page',
+  name: 'Step8Page',
   computed: {
     ...mapGetters({
       questBoxSet: 'quest/questBoxSet',

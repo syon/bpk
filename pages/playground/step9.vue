@@ -62,7 +62,7 @@ import { mapGetters } from 'vuex'
 import svgPanZoom from 'svg-pan-zoom'
 
 export default {
-  name: 'Step6Page',
+  name: 'Step9Page',
   data: () => ({
     ready: false,
     spz: null,

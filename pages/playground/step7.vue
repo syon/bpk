@@ -75,7 +75,7 @@ const storeBonds = [
 ]
 
 export default {
-  name: 'Step6Page',
+  name: 'Step7Page',
   computed: {
     questBoxes() {
       return storeBoxSet
