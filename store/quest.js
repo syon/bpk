@@ -17,10 +17,16 @@ export const getters = {
 
 export const mutations = {
   addQuest(state, item) {
-    state.questdata = [...questdata, item]
+    state.questdata = { ...questdata, [item.name]: item.obj }
   },
 }
 
 export const actions = {
-  async load({ commit }) {},
+  addQuestItem({ commit }) {
+    const item = {
+      name: 'hhh',
+      obj: { x: 500, y: 200, reqs: ['abc', 'def'] },
+    }
+    commit('addQuest', item)
+  },
 }
