@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="body px-2 py-2">
-      <ul class="list-inside list-disc pl-2 text-sm">
+      <ul class="list-inside pl-2 text-sm">
         <li v-for="(req, idx) of obj.reqs" :key="idx">{{ req }}</li>
       </ul>
     </div>

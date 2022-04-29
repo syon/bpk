@@ -1,0 +1,10 @@
+{
+  "a00": { "x": 30, "y": 170, "reqs": ["abc", "def", "ghi", "jkl"] },
+  "aaa": { "x": 240, "y": 30, "reqs": ["abc", "def", "ghi", "jkl"] },
+  "bbb": { "x": 480, "y": 50, "reqs": ["abc", "def", "ghi"] },
+  "ccc": { "x": 740, "y": 80, "reqs": ["abc", "def", "ghi"] },
+  "ddd": { "x": 260, "y": 280, "reqs": ["abc"] },
+  "eee": { "x": 520, "y": 360, "reqs": ["abc", "def", "ghi", "jkl", "mno"] },
+  "fff": { "x": 760, "y": 300, "reqs": ["abc", "def"] },
+  "ggg": { "x": 980, "y": 170, "reqs": ["abc", "def"] }
+}
