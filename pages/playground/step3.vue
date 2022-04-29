@@ -20,6 +20,9 @@
 
         <template v-for="(obj, key) of skeletonSet">
           <g :key="`ske-${key}`">
+            <text :x="obj.mx" :y="obj.my - 5" font-size="10" fill="red">
+              x:{{ obj.mx }} y:{{ obj.my }}
+            </text>
             <rect
               width="160"
               height="160"
@@ -82,22 +85,6 @@ export default {
           ep: dBox.in,
         }
       })
-    },
-    xlines() {
-      return [
-        {
-          sp: { x: 100, y: 200 },
-          ep: { x: 600, y: 400 },
-        },
-        {
-          sp: { x: 550, y: 80 },
-          ep: { x: 150, y: 500 },
-        },
-        {
-          sp: { x: 200, y: 50 },
-          ep: { x: 700, y: 250 },
-        },
-      ]
     },
   },
 }
