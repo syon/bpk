@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: 'QuestPage',
+  name: 'Step3Page',
   computed: {
     boxes() {
       return {

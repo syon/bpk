@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'MultiBezierPage',
+  name: 'Step2Page',
   computed: {
     pairs() {
       return [

@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'BezierPage',
+  name: 'Step1Page',
 }
 </script>
 
