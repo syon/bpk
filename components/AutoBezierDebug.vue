@@ -1,7 +1,7 @@
 <template>
   <g @mousemove="onMousemove" @pointerup="dragStop">
     <path class="connector" :d="connectorData" />
-    <text x="10" y="20" font-size="12" font-family="monospace">
+    <text x="10" y="580" font-size="12" font-family="monospace">
       &lt;path d="{{ connectorData }}"/&gt;
     </text>
     <g>
@@ -38,7 +38,6 @@
           :cy="sh.y"
           r="5"
           class="zz-handle"
-          @pointerdown="dragStart('startHandle')"
         />
         <text :x="sh.x + 15" :y="sh.y + 15" font-size="12">
           x:{{ sh.x }} y:{{ sh.y }}
@@ -51,7 +50,6 @@
           :cy="eh.y"
           r="5"
           class="zz-handle"
-          @pointerdown="dragStart('endHandle')"
         />
         <text :x="eh.x + 15" :y="eh.y + 15" font-size="12">
           x:{{ eh.x }} y:{{ eh.y }}
@@ -66,23 +64,28 @@ export default {
   data: () => ({
     isDragging: false,
     dragProp: '',
-    startPoint: { x: 200, y: 200 },
-    startHandle: { x: 350, y: 150 },
-    endHandle: { x: 350, y: 400 },
-    endPoint: { x: 600, y: 350 },
+    startPoint: { x: 120, y: 400 },
+    // startHandle: { x: 350, y: 150 },
+    // endHandle: { x: 350, y: 400 },
+    endPoint: { x: 650, y: 120 },
   }),
   computed: {
     sp() {
       return this.startPoint
     },
     sh() {
-      return this.startHandle
+      return { x: (this.sp.x + this.ep.x) / 2, y: this.sp.y }
     },
     eh() {
-      return this.endHandle
+      return { x: (this.sp.x + this.ep.x) / 2, y: this.ep.y }
     },
     ep() {
       return this.endPoint
+    },
+    direction() {
+      const hDistance = Math.abs(this.ep.x - this.sp.x)
+      const vDistance = Math.abs(this.ep.y - this.sp.y)
+      return hDistance >= vDistance ? 'horizontal' : 'vertical'
     },
     startHandlePath() {
       const { sp, sh } = this
@@ -118,26 +121,26 @@ export default {
 <style scoped>
 .connector {
   fill: none;
-  stroke: royalblue;
+  stroke: rebeccapurple;
   stroke-width: 3px;
 }
 
 .zz-point {
-  fill: rgba(30, 144, 255, 0.2);
-  stroke: dodgerblue;
+  fill: rgba(144, 30, 255, 0.2);
+  stroke: blueviolet;
   stroke-width: 1;
   cursor: pointer;
 }
 
 .zz-handle {
-  fill: rgba(30, 144, 255, 0.2);
-  stroke: dodgerblue;
+  fill: rgba(0, 0, 0, 0.1);
+  stroke: silver;
   stroke-width: 1;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
 .zz-handleline {
-  stroke: dodgerblue;
+  stroke: silver;
   stroke-width: 1;
 }
 

@@ -3,6 +3,7 @@
     <div id="canvas">
       <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
         <simple-path />
+        <auto-bezier-debug />
       </svg>
     </div>
   </main>
