@@ -6,18 +6,26 @@
         width="100vw"
         height="100vh"
         xmlns="http://www.w3.org/2000/svg"
+        @mousemove="onMousemove"
+        @pointerup="dragStop"
       >
+        <g>
+          <path :d="scaledMouseXLine" stroke="cyan" />
+          <path :d="scaledMouseYLine" stroke="cyan" />
+        </g>
+
         <template v-for="(pSet, idx) of lines">
           <auto-bezier :key="`bez-${idx}`" :sp="pSet.sp" :ep="pSet.ep" />
         </template>
 
-        <template v-for="(b, idx) of questBoxSet">
+        <template v-for="(b, key) of questBoxSet">
           <foreignObject
-            :key="`fo-${idx}`"
+            :key="`fo-${key}`"
             width="160"
             height="160"
             :x="b.x"
             :y="b.y"
+            @pointerdown="dragStart(key)"
           >
             <quest-box2 :obj="b" />
           </foreignObject>
@@ -67,6 +75,10 @@ export default {
     ready: false,
     spz: null,
     spzState: 'enabled',
+    scaledMouseX: 0,
+    scaledMouseY: 0,
+    isDragging: false,
+    dragProp: '',
   }),
   computed: {
     ...mapGetters({
@@ -106,6 +118,16 @@ export default {
         }
       })
     },
+    scaledMouseXLine() {
+      const mx = this.scaledMouseX
+      const my = this.scaledMouseY
+      return `M${mx},${my - 100} L${mx},${my + 100}`
+    },
+    scaledMouseYLine() {
+      const mx = this.scaledMouseX
+      const my = this.scaledMouseY
+      return `M${mx - 100},${my} L${mx + 100},${my}`
+    },
   },
   mounted() {
     this.init()
@@ -131,6 +153,34 @@ export default {
         this.spz.enableDblClickZoom()
         this.spzState = 'enabled'
       }
+    },
+    dragStart(prop) {
+      this.isDragging = true
+      this.dragProp = prop
+    },
+    dragStop() {
+      this.isDragging = false
+    },
+    onMousemove(event) {
+      // if (!this.isDragging) return false
+      this.refreshMousePos(event)
+
+      // this[this.dragProp].x = offsetX
+      // this[this.dragProp].y = offsetY
+    },
+    refreshMousePos(event) {
+      const { x, y } = event
+      const matrix = this.detectMatrix()
+      const calcX = (x - matrix.transX) / matrix.scaleX
+      const calcY = (y - matrix.transY) / matrix.scaleY
+      this.scaledMouseX = calcX
+      this.scaledMouseY = calcY
+    },
+    detectMatrix() {
+      const vp = this.$el.querySelector('.svg-pan-zoom_viewport')
+      const vpmx = vp.transform.baseVal.consolidate().matrix
+      // https://ginpen.com/2018/11/13/understanding-transform-matrix/
+      return { scaleX: vpmx.a, scaleY: vpmx.d, transX: vpmx.e, transY: vpmx.f }
     },
   },
 }
