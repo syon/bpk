@@ -26,7 +26,7 @@
               height="160"
               :x="b.x"
               :y="b.y"
-              @pointerdown="dragStart(key)"
+              @pointerdown="dragStart($event, key)"
             >
               <quest-box2 :obj="b" />
             </foreignObject>
@@ -63,6 +63,9 @@
           Controll: {{ spzState }}
         </button>
       </div>
+      <div id="toolbar">
+        <button class="border px-2" @click="newItem">new</button>
+      </div>
     </div>
   </main>
 </template>
@@ -81,6 +84,7 @@ export default {
     scaledMouseY: 0,
     isDragging: false,
     dragProp: '',
+    dragOffset: { x: 0, y: 0 },
   }),
   computed: {
     ...mapGetters({
@@ -95,10 +99,11 @@ export default {
           const inPoints = []
           let h = 60
           for (let i = 0; i < reqs.length; i++) {
-            inPoints.push({ x, y: y + 20 * i + 53 })
+            inPoints.push({ key, x, y: y + 20 * i + 53, req: reqs[i] })
             h += 18
           }
           const val = {
+            name: key,
             mx: x,
             my: y,
             in: inPoints,
@@ -155,21 +160,27 @@ export default {
         this.spz.enableDblClickZoom()
         this.spzState = 'enabled'
       }
-      this.$store.dispatch('quest/addQuestItem')
     },
-    dragStart(prop) {
+    dragStart(event, prop) {
       this.isDragging = true
       this.dragProp = prop
+      const { offsetX, offsetY } = event
+      this.dragOffset = { x: offsetX, y: offsetY }
     },
     dragStop() {
       this.isDragging = false
     },
     onMousemove(event) {
-      // if (!this.isDragging) return false
       this.refreshMousePos(event)
 
-      // this[this.dragProp].x = offsetX
-      // this[this.dragProp].y = offsetY
+      if (this.isDragging && !this.spz.isPanEnabled()) {
+        const payload = {
+          name: this.dragProp,
+          x: this.scaledMouseX - this.dragOffset.x,
+          y: this.scaledMouseY - this.dragOffset.y,
+        }
+        this.$store.dispatch('quest/changeQuestItem', payload)
+      }
     },
     refreshMousePos(event) {
       const { x, y } = event
@@ -184,6 +195,9 @@ export default {
       const vpmx = vp.transform.baseVal.consolidate().matrix
       // https://ginpen.com/2018/11/13/understanding-transform-matrix/
       return { scaleX: vpmx.a, scaleY: vpmx.d, transX: vpmx.e, transY: vpmx.f }
+    },
+    newItem() {
+      this.$store.dispatch('quest/addQuestItem')
     },
   },
 }
@@ -209,6 +223,12 @@ svg {
 #spz-pan {
   position: absolute;
   bottom: 10px;
+  left: 10px;
+}
+
+#toolbar {
+  position: absolute;
+  bottom: 50px;
   left: 10px;
 }
 </style>
