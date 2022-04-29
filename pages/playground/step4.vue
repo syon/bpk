@@ -3,7 +3,7 @@
     <div id="canvas">
       <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
         <template v-for="(pSet, idx) of lines">
-          <auto-bezier-info :key="`bez-${idx}`" :sp="pSet.sp" :ep="pSet.ep" />
+          <auto-bezier :key="`bez-${idx}`" :sp="pSet.sp" :ep="pSet.ep" />
         </template>
 
         <template v-for="(b, idx) of boxes">
@@ -31,7 +31,9 @@
               fill="none"
               stroke="red"
             />
-            <circle :cx="obj.in.x" :cy="obj.in.y" r="5" fill="red" />
+            <g v-for="(inp, idx) of obj.in" :key="`inp-${idx}`">
+              <circle :cx="inp.x" :cy="inp.y" r="5" fill="red" />
+            </g>
             <circle :cx="obj.out.x" :cy="obj.out.y" r="5" fill="orange" />
           </g>
         </template>
@@ -42,7 +44,7 @@
 
 <script>
 export default {
-  name: 'Step3Page',
+  name: 'Step4Page',
   computed: {
     boxes() {
       return {
@@ -61,7 +63,12 @@ export default {
           const val = {
             mx: x,
             my: y,
-            in: { x, y: y + 18 },
+            in: [
+              { x, y: y + 50 },
+              { x, y: y + 70 },
+              { x, y: y + 90 },
+              { x, y: y + 110 },
+            ],
             out: { x: x + 160, y: y + 18 },
           }
           return [key, val]
@@ -70,19 +77,19 @@ export default {
     },
     lines() {
       const bonds = [
-        { src: 'aaa', dst: 'bbb' },
-        { src: 'bbb', dst: 'ccc' },
-        { src: 'ddd', dst: 'eee' },
-        { src: 'eee', dst: 'fff' },
-        { src: 'bbb', dst: 'fff' },
-        { src: 'ddd', dst: 'ccc' },
+        { src: 'aaa', dst: 'bbb', dstidx: 1 },
+        { src: 'bbb', dst: 'ccc', dstidx: 2 },
+        { src: 'ddd', dst: 'eee', dstidx: 3 },
+        { src: 'eee', dst: 'fff', dstidx: 0 },
+        { src: 'bbb', dst: 'fff', dstidx: 2 },
+        { src: 'ddd', dst: 'ccc', dstidx: 1 },
       ]
       return bonds.map((b) => {
         const sBox = this.skeletonSet[b.src]
         const dBox = this.skeletonSet[b.dst]
         return {
           sp: sBox.out,
-          ep: dBox.in,
+          ep: dBox.in[b.dstidx],
         }
       })
     },

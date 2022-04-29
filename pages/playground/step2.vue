@@ -3,7 +3,7 @@
     <div id="canvas">
       <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
         <template v-for="(pSet, idx) of pairs">
-          <auto-bezier :key="idx" :sp="pSet.sp" :ep="pSet.ep" />
+          <auto-bezier-info :key="idx" :sp="pSet.sp" :ep="pSet.ep" />
         </template>
       </svg>
     </div>

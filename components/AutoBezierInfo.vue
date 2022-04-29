@@ -1,6 +1,18 @@
 <template>
   <g>
     <path class="connector" :d="connectorData" />
+    <g>
+      <g>
+        <text :x="sp.x + 15" :y="sp.y + 15" font-size="12">
+          x:{{ sp.x }} y:{{ sp.y }}
+        </text>
+      </g>
+      <g>
+        <text :x="ep.x + 15" :y="ep.y + 15" font-size="12">
+          x:{{ ep.x }} y:{{ ep.y }}
+        </text>
+      </g>
+    </g>
   </g>
 </template>
 
